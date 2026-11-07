@@ -16,11 +16,15 @@ A made-up CFO at a mid-size Orange County nonprofit hospital. Nurses leave becau
 
 ## What we built
 
-One page, four parts:
+One page with two doors that share one live database. The thread between them is **the gap**: one dollar figure per home that a buyer creates and an employer closes.
+
+**Door 1: I'm buying a home.** A buyer enters household size, income, a city and their employer's industry. They see the price they can afford (HCD 2026 limits, HSC 50052.5, today's rate), state help (Dream For All), and their exact gap, plus the cities where their gap is smallest. They can post the gap to the Exchange (only city, gap, income band and industry are shared) and copy a draft note asking their employer to join. Their screen updates live as employers fund it, until it reads "Your gap is closed: $0 left".
+
+**Door 2: I'm funding homes.** The employer side, in four parts:
 
 1. **OC Housing Offset Index.** What it costs today to close one starter home for a moderate-income family of 4, after state programs. It's the median across 37 OC cities, built from HCD income limits, Freddie Mac weekly rates and Zillow starter-home values. It was **$159,484 on Nov 5, 2026**, down $10,457 since Oct 8 as rates fell.
 2. **Benefit stack.** Pick a buyer type, an amount and a structure (recoverable stake or grant). Eight benefits, each with a value and an evidence label (Sourced, Framework exists, Needs counsel, Prove in pilot).
-3. **Live market.** Nine Home Offset Units, priced at each city's real gap. Anyone signed in can commit, and the progress bars, leaderboard and trade ticker are shared live. Commitments are simulated; no money moves.
+3. **Live market.** Gaps posted by buyers appear first, tagged "buyer request", followed by nine Home Offset Units priced at each city's real gap. Anyone signed in can commit, and the progress bars, leaderboard and trade ticker are shared live. Commitments are simulated; no money moves.
 4. **AI benefit analyst.** Describe any company in plain text. Claude calls the page's own calculator, inventory and index as tools and returns that company's benefit stack, with what still needs proof.
 
 A second page, `last-mile-map.html`, maps every OC city by the dollars left to close a starter home after state programs, with gift, rate, income and Dream For All controls.
@@ -95,6 +99,9 @@ No API keys or environment variables are needed.
 
 | Part | Status |
 |---|---|
+| Buyer gap calculator | Working, real data (HCD limits by household size 1–8); test only with made-up households |
+| Posting a gap and live "gap closed" status | Working shared database; gaps are not verified by a nonprofit yet |
+| Ask-your-employer note | Draft only; nothing is sent |
 | Housing Offset Index and its 9-week history | Working, real data |
 | City gaps and unit prices | Working, real data (typical values, not specific listings) |
 | Benefit stack calculator | Working; several inputs are labeled ASSUMPTION |
