@@ -2,7 +2,7 @@
 
 > Don't just fund housing. Finance the future. A marketplace for the housing gap: working families in Orange County post the gap between what they can afford and a home near work; companies close it, keep the people they depend on, get credit for it, and get their money back when the home sells.
 
-**Team:** TODO team name
+**Team:** Housing in Bloom
 **Members:** TODO names
 **Lane:** 3 Fund it
 **Built at:** Claude Impact Lab: UCI × SoCal Affordable Housing, November 7, 2026
@@ -29,7 +29,7 @@ One page: a front door that explains the marketplace and why everyone wins, then
 
 A second page, `last-mile-map.html`, maps every OC city by the dollars left to close a starter home after state programs, with gift, rate, income and Dream For All controls.
 
-**Demo video:** TODO (uploaded on the hub)
+**Demo video:** [video/housing-offset-exchange-demo.mp4](video/housing-offset-exchange-demo.mp4) (27 seconds; also uploaded on the hub)
 **Live demo:** https://claude.ai/artifact/JyUPJtdtUrQW7DiJCMVA7h
 **Last-Mile Map:** https://claude.ai/artifact/1Efqbm2s6UcwYFXyAT6Mjo
 
