@@ -41,7 +41,7 @@ A second page, `last-mile-map.html`, maps every OC city by the dollars left to c
 **Locally:**
 
 ```bash
-git clone TODO-repo-url
+git clone https://github.com/dbwdev/housing-offset-exchange.git
 ```
 
 ```bash
