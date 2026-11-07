@@ -1,6 +1,6 @@
 # Housing Offset Exchange
 
-> For Orange County employers deciding where their community and ESG dollars go: a carbon-offset-style market where a company funds one working family's home near its job, sees every benefit it gets back, and gets the capital back when the home sells.
+> Don't just fund housing. Finance the future. A marketplace for the housing gap: working families in Orange County post the gap between what they can afford and a home near work; companies close it, keep the people they depend on, get credit for it, and get their money back when the home sells.
 
 **Team:** TODO team name
 **Members:** TODO names
@@ -16,7 +16,7 @@ A made-up CFO at a mid-size Orange County nonprofit hospital. Nurses leave becau
 
 ## What we built
 
-One page with two doors that share one live database. The thread between them is **the gap**: one dollar figure per home that a buyer creates and an employer closes.
+One page: a front door that explains the marketplace and why everyone wins, then two doors that share one live database. The thread between them is **the gap**: one dollar figure per home that a buyer creates and an employer closes.
 
 **Door 1: I'm buying a home.** A buyer enters household size, income, a city and their employer's industry. They see the price they can afford (HCD 2026 limits, HSC 50052.5, today's rate), state help (Dream For All), and their exact gap, plus the cities where their gap is smallest. They can post the gap to the Exchange (only city, gap, income band and industry are shared) and copy a draft note asking their employer to join. Their screen updates live as employers fund it, until it reads "Your gap is closed: $0 left".
 

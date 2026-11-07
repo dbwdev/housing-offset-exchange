@@ -254,18 +254,77 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
 .loop3 p{color:var(--muted);font-size:.92rem}
 @media (max-width:700px){.loop3{grid-template-columns:1fr}}
 .priv{font-size:.8rem;color:var(--muted);border-left:3px solid var(--rule);padding-left:10px}
+
+/* home / front door */
+.hhero{padding-block:48px 28px;display:flex;flex-direction:column;gap:16px;max-width:860px}
+.hhero h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:800;letter-spacing:-.035em;line-height:.98}
+.hhero h1 em{font-style:normal;color:var(--euc)}
+.hhero .lead{font-size:clamp(1.1rem,2.2vw,1.35rem);color:var(--muted);max-width:60ch}
+.hhero .lead b{color:var(--ink)}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:stretch;margin-top:8px}
+.flow .side{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.flow .side.fam{border-top:5px solid var(--poppy)} .flow .side.co{border-top:5px solid var(--euc)}
+.flow .side p{color:var(--muted)}
+.flow .mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+.gapchip{background:var(--ink);color:var(--sheet);border-radius:14px;padding:16px 26px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.gapchip .eyebrow{color:var(--sheet);opacity:.7}
+.gapchip b{font-family:var(--display);font-size:2.6rem;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.gapchip small{font-size:.72rem;opacity:.75}
+.arrows{display:flex;gap:18px;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.arrows span:first-child{color:var(--poppy)} .arrows span:last-child{color:var(--euc)}
+@media (max-width:760px){.flow{grid-template-columns:1fr}}
+.wwh{margin:44px 0 16px}
+.winwin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.winwin .w{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.winwin .w.co{border:2px solid var(--euc);background:var(--euc-soft)}
+.winwin .w p{color:var(--muted)}
+.winwin ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.winwin li{font-size:.95rem}
+@media (max-width:820px){.winwin{grid-template-columns:1fr}}
+.doors2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
+.bigdoor{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink);background:var(--sheet);border:2px solid var(--ink);border-radius:14px;padding:20px 22px}
+.bigdoor b{font-family:var(--display);font-size:1.6rem;font-weight:800}
+.bigdoor small{color:var(--muted)}
+.bigdoor.fam:hover{border-color:var(--poppy)} .bigdoor.co:hover{border-color:var(--euc)}
+@media (max-width:620px){.doors2{grid-template-columns:1fr}}
 </style>
 
 <nav class="doors"><div class="wrap doors-in">
   <span class="brand"><i aria-hidden="true"></i>Housing Offset Exchange</span>
   <span class="tagline">Don't just fund housing. <em>Finance the future.</em></span>
-  <div class="doorbtns"><a class="door" id="dBuy" href="#buy">I'm buying a home</a><a class="door" id="dFund" href="#fund">I'm funding homes</a></div>
+  <div class="doorbtns"><a class="door" id="dHome" href="#home">How it works</a><a class="door" id="dBuy" href="#buy">I'm buying a home</a><a class="door" id="dFund" href="#fund">I'm funding homes</a></div>
 </div></nav>
+
+<div id="homeView">
+  <div class="wrap" style="padding-bottom:64px">
+    <section class="hhero">
+      <span class="eyebrow">A marketplace for the housing gap · Orange County</span>
+      <h1>Don't just fund housing.<br><em>Finance the future.</em></h1>
+      <p class="lead">Working families post the <b>gap</b> between what they can afford and a home near work. <b>Companies close it</b>, keep the people they depend on, and <b>get their money back</b> when the home sells.</p>
+    </section>
+    <div class="flow" aria-label="How the marketplace works">
+      <div class="side fam"><span class="eyebrow">Side 1</span><h3>Working families</h3><p>Post their gap: one number, after state help.</p></div>
+      <div class="mid"><div class="gapchip"><span class="eyebrow">the gap</span><b id="hGapEx">$9,000</b><small>example: a typical starter home in Laguna Hills</small></div><div class="arrows"><span>posts →</span><span>← closes</span></div></div>
+      <div class="side co"><span class="eyebrow">Side 2</span><h3>Companies</h3><p>Fund gaps near their sites, as a stake that comes back at resale.</p></div>
+    </div>
+    <h2 class="wwh">Everyone wins</h2>
+    <div class="winwin">
+      <div class="w fam"><span class="eyebrow">Families get</span><h3>A home near work</h3><p>Priced by what they earn, with every public program stacked first.</p></div>
+      <div class="w co"><span class="eyebrow">Companies get</span><h3>Their money back, and more</h3><ul><li><b>Keep your people</b> · staff who stay</li><li><b>Get your money back</b> · returned at resale</li><li><b>Get credit for it</b> · impact you can report</li></ul></div>
+      <div class="w com"><span class="eyebrow">The community gets</span><h3>Money that keeps working</h3><p>The people who keep it running can live in it, and every dollar returns to help the next family.</p></div>
+    </div>
+    <div class="doors2">
+      <a class="bigdoor fam" href="#buy"><span class="eyebrow">I'm buying a home</span><b>See my gap →</b><small>Four questions. Nothing saved unless you post.</small></a>
+      <a class="bigdoor co" href="#fund"><span class="eyebrow">I'm funding homes</span><b>See what we get back →</b><small>Benefit stack, live market, AI analyst.</small></a>
+    </div>
+    <p class="note" style="margin-top:18px">Real data: HCD 2026 income limits, Freddie Mac weekly rates, Zillow starter-home values. Commitments in this prototype are simulated. Not financial, tax or legal advice.</p>
+  </div>
+</div>
 
 <div id="buyView">
   <div class="wrap" style="padding-bottom:64px">
     <section class="bhero">
-      <span class="eyebrow">For people who work in Orange County</span>
+      <span class="eyebrow">For working families in Orange County</span>
       <h1>How close are you to owning a home <em>near work</em>?</h1>
       <p>Answer four questions. See the price you can afford, the state help you may get, and the exact gap left. Then post that gap, and local employers can close it.</p>
     </section>
@@ -330,13 +389,11 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
 
   <div class="hero">
     <div>
-      <span class="eyebrow">For CFOs, ESG and HR leads in Orange County</span>
+      <span class="eyebrow">For companies · CFOs, HR and ESG leads</span>
       <h1 class="hook">Don't just fund housing.<br><em>Finance the future.</em></h1>
-      <div class="both">
-        <div><span class="eyebrow">For the community</span><p>Nurses, teachers and the people who keep Orange County running get a home near where they work. When it sells, the money funds the next family.</p></div>
-        <div><span class="eyebrow">For your company</span><p><b>Keep your people. Get your money back. Get credit for it.</b> Replacing one nurse costs about $60,000. Closing a nurse's home gap can cost about $9,000, and it comes back.</p></div>
-      </div>
-      <p class="fine">$60,090: average cost to replace a bedside RN (NSI 2026). About $9,000: the gap on a typical Laguna Hills starter home after state help, for a moderate-income family of 4 (Dream For All funds not confirmed).</p>
+      <div class="three"><span><b>1</b>Keep your people</span><span><b>2</b>Get your money back</span><span><b>3</b>Get credit for it</span></div>
+      <p>Close the housing gap for the workforce near your sites. Your money sits in the homes and comes back when they sell. Losing an employee is expensive; the gap is often smaller, and it's recoverable.</p>
+      <p class="fine">Example: replacing one hospital RN averages $60,090 (NSI 2026), while the gap on a typical Laguna Hills starter home after state help is about $9,000 (moderate-income family of 4; Dream For All funds not confirmed).</p>
     </div>
     <div class="index" aria-live="polite">
       <span class="eyebrow">OC Housing Offset Index · cost to close one starter home</span>
@@ -424,7 +481,7 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
     <div class="analyst">
       <div class="panel">
         <label for="desc" class="eyebrow">Company profile</label>
-        <textarea id="desc">Nonprofit hospital in Santa Ana, about 3,000 staff, struggling to keep night-shift nurses who commute from the Inland Empire. Considering $2M.</textarea>
+        <textarea id="desc">Logistics company in Irvine with about 1,200 warehouse and office staff. Hard to hire and keep people who can afford to live nearby. Considering $2M and wants something it can report.</textarea>
         <div class="chips" id="presets"></div>
         <button class="btn" type="button" id="runAnalyst">Build the benefit stack</button>
         <span class="note" id="anNote">Uses Claude through this page. Signed-in claude.ai viewers only.</span>
@@ -605,7 +662,7 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
   const UNITS=gaps(7.18).filter(g=>g.gap>0).sort((a,b)=>a.gap-b.gap).slice(0,9).map((g,i)=>({id:"city:"+g.city,serial:"HOU-OC-"+String(101+i*7).padStart(4,"0"),city:g.city,price:Math.round(g.gap/1000)*1000}));
   let orders={}, uid=null, db=null, mine={org:"",buys:[]}, writing=Promise.resolve();
   let requests={}, REQS=[], buyerReady=false;
-  const SECT={health:"Health care",education:"Schools",hospitality:"Hospitality",manufacturing:"Manufacturing",finance:"Banking & finance",public:"Public sector",other:"Other"};
+  const SECT={other:"Any industry",health:"Health care",education:"Schools",hospitality:"Hospitality",manufacturing:"Manufacturing",finance:"Banking & finance",public:"Public sector"};
   const allUnits=()=>[...REQS,...UNITS];
   const unitKey=b=>b.unit||("city:"+b.city);
   const reqSerial=id=>"HOU-REQ-"+String(id).slice(-4).toUpperCase();
@@ -683,7 +740,7 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
   })();
 
   // ---------- AI analyst (sample) ----------
-  const PRESETS=[["Hospital","Nonprofit hospital in Santa Ana, about 3,000 staff, struggling to keep night-shift nurses who commute from the Inland Empire. Considering $2M."],
+  const PRESETS=[["Logistics","Logistics company in Irvine with about 1,200 warehouse and office staff. Hard to hire and keep people who can afford to live nearby. Considering $2M and wants something it can report."],["Hospital","Nonprofit hospital in Santa Ana, about 3,000 staff, struggling to keep night-shift nurses who commute from the Inland Empire. Considering $2M."],
                  ["Bank","Regional bank headquartered in Irvine with 40 OC branches. CRA exam next year. Wants a community investment it can show. Budget $5M."],
                  ["Theme park","Large Anaheim resort employer, mostly hourly workers, high turnover, ESG report under scrutiny. Thinking about $3M."],
                  ["School district","Public school district in Garden Grove losing early-career teachers to cheaper counties. Has $750k of one-time funds."]];
@@ -744,7 +801,7 @@ Write for a non-expert: plain words, no jargon. Group benefits under "Keep your 
   const CITY_LIST=CITIES.filter(c=>!c[2]).map(c=>c[0]).sort();
   $("bSize").innerHTML=[1,2,3,4,5,6,7,8].map(n=>`<option value="${n}"${n===4?" selected":""}>${n}</option>`).join("");
   $("bCity").innerHTML=CITY_LIST.map(c=>`<option${c==="Laguna Hills"?" selected":""}>${c}</option>`).join("");
-  $("bSect").innerHTML=Object.entries(SECT).map(([k,v])=>`<option value="${k}"${k==="health"?" selected":""}>${v}</option>`).join("");
+  $("bSect").innerHTML=Object.entries(SECT).map(([k,v])=>`<option value="${k}"${k==="other"?" selected":""}>${v}</option>`).join("");
 
   function buyerCalc(n,inc,city){
     const cat= inc<=LOWL[n]?"lower":inc<=MODL[n]?"moderate":"above";
@@ -781,9 +838,9 @@ Write for a non-expert: plain words, no jargon. Group benefits under "Keep your 
     if(city==="Garden Grove") progs.push(["Garden Grove first-time buyer program","https://ggcity.org/sites/default/files/2025-first-time-homebuyer-guidelines.pdf","City program guidelines (PDF).",true]);
     if(sect==="education") progs.push(["CalHFA programs for school employees","https://www.calhfa.ca.gov/homebuyer/programs/","Check current terms with CalHFA.",true]);
     $("bProgs").replaceChildren(...progs.map(p=>{const li=document.createElement("li");li.innerHTML=`<a href="${p[1]}" target="_blank" rel="noopener"></a><span class="note"></span>`;li.querySelector("a").textContent=p[0];li.querySelector(".note").textContent=p[2];if(!p[3])li.style.opacity=.45;return li;}));
-    $("bShare").innerHTML=[city,fmt(B.gapR)+" gap",catTxt,SECT[sect]+" worker"].map(s=>`<span>${esc(s)}</span>`).join("");
+    $("bShare").innerHTML=[city,fmt(B.gapR)+" gap",catTxt,SECT[sect]].map(s=>`<span>${esc(s)}</span>`).join("");
     const serial = uid&&requests[uid] ? reqSerial(uid) : "a Home Offset Unit";
-    $("bLetter").value=`Subject: Closing a home gap for one of our ${SECT[sect].toLowerCase()} workers
+    $("bLetter").value=`Subject: Closing a home gap for one of our employees
 
 Hi HR and benefits team,
 
@@ -843,15 +900,15 @@ Thank you,
   buyerReady=true;
 
   // ---------- doors (hash routing) ----------
-  document.querySelectorAll('a[href="#fund"],a[href="#buy"]').forEach(a=>a.addEventListener("click",e=>{
+  document.querySelectorAll('a[href="#fund"],a[href="#buy"],a[href="#home"]').forEach(a=>a.addEventListener("click",e=>{
     e.preventDefault(); const v=a.getAttribute("href").slice(1);
     try{ if(location.hash!=="#"+v) location.hash=v; }catch(err){}
     route(v); window.scrollTo(0,0);
   }));
   function route(force){
-    const v=force||(location.hash==="#fund"?"fund":"buy");
-    $("buyView").hidden=v!=="buy"; $("fundView").hidden=v!=="fund";
-    $("dBuy").setAttribute("aria-current",v==="buy"?"page":"false"); $("dFund").setAttribute("aria-current",v==="fund"?"page":"false");
+    const v=force||({"#fund":"fund","#buy":"buy"}[location.hash]||"home");
+    $("homeView").hidden=v!=="home"; $("buyView").hidden=v!=="buy"; $("fundView").hidden=v!=="fund";
+    $("dHome").setAttribute("aria-current",v==="home"?"page":"false"); $("dBuy").setAttribute("aria-current",v==="buy"?"page":"false"); $("dFund").setAttribute("aria-current",v==="fund"?"page":"false");
   }
   window.addEventListener("hashchange",()=>{route();window.scrollTo(0,0);});
   route();
