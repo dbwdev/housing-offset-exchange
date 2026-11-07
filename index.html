@@ -73,6 +73,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .three span{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:1.05rem;background:var(--sheet);border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px 6px 6px}
 .three b{width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--sheet);display:grid;place-items:center;font-family:var(--mono);font-size:.75rem}
 .hero p.fine{font-size:.78rem;margin-top:10px}
+.both{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.both>div{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.both>div:first-child{border-top:4px solid var(--euc)} .both>div:last-child{border-top:4px solid var(--poppy)}
+.hero .both p{font-size:.95rem;margin-top:0;color:var(--muted)} .hero .both p b{color:var(--ink)}
+@media (max-width:560px){.both{grid-template-columns:1fr}}
+.tagline{font-family:var(--display);font-weight:700;font-size:.92rem;color:var(--muted)}
+.tagline em{font-style:normal;color:var(--euc)}
 .grp{display:flex;align-items:center;gap:10px;padding:14px 0 4px;font-family:var(--display);font-weight:800;font-size:1.15rem}
 .grp b{width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--sheet);display:grid;place-items:center;font-family:var(--mono);font-size:.78rem}
 .grp:first-child{padding-top:0}
@@ -251,6 +258,7 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
 
 <nav class="doors"><div class="wrap doors-in">
   <span class="brand"><i aria-hidden="true"></i>Housing Offset Exchange</span>
+  <span class="tagline">Don't just fund housing. <em>Finance the future.</em></span>
   <div class="doorbtns"><a class="door" id="dBuy" href="#buy">I'm buying a home</a><a class="door" id="dFund" href="#fund">I'm funding homes</a></div>
 </div></nav>
 
@@ -323,9 +331,11 @@ footer ul{margin:0;padding-left:1.1em;columns:2;column-gap:32px}
   <div class="hero">
     <div>
       <span class="eyebrow">For CFOs, ESG and HR leads in Orange County</span>
-      <h1 class="hook">Replacing a nurse costs <span class="hp">$60,000</span>.<br>Keeping one costs about <span class="he">$9,000</span>.<br><em>And you get it back.</em></h1>
-      <div class="three"><span><b>1</b>Keep your people</span><span><b>2</b>Get your money back</span><span><b>3</b>Get credit for it</span></div>
-      <p>Close the gap on a home near work for one of your workers. When the home sells, your money comes back. Up to eight returns, each labeled by how proven it is.</p>
+      <h1 class="hook">Don't just fund housing.<br><em>Finance the future.</em></h1>
+      <div class="both">
+        <div><span class="eyebrow">For the community</span><p>Nurses, teachers and the people who keep Orange County running get a home near where they work. When it sells, the money funds the next family.</p></div>
+        <div><span class="eyebrow">For your company</span><p><b>Keep your people. Get your money back. Get credit for it.</b> Replacing one nurse costs about $60,000. Closing a nurse's home gap can cost about $9,000, and it comes back.</p></div>
+      </div>
       <p class="fine">$60,090: average cost to replace a bedside RN (NSI 2026). About $9,000: the gap on a typical Laguna Hills starter home after state help, for a moderate-income family of 4 (Dream For All funds not confirmed).</p>
     </div>
     <div class="index" aria-live="polite">
