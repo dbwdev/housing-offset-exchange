@@ -1,0 +1,356 @@
+<title>Last-Mile Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;900&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a survey sheet. Headline counter and controls on top; the map (left) and ranked ledger (right) side by side; the selected city's breakdown, gap clock and rate dividend below; method and sources last. */
+:root{
+  --land:#f3f4ef; --sheet:#ffffff; --sea:#dfe9ef; --ink:#18222d; --muted:#5d6874; --rule:#d9ddd6;
+  --closed:#2c8656; --closed-soft:#dcefe3; --last:#d9591f; --last-soft:#fbe5d9; --far:#97a2ad;
+  --display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --land:#10161c; --sheet:#171f27; --sea:#15232d; --ink:#e4e9ee; --muted:#9aa6b2; --rule:#28333e;
+  --closed:#5cc28b; --closed-soft:#173326; --last:#ff8a52; --last-soft:#3b2216; --far:#5f6b77; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --land:#10161c; --sheet:#171f27; --sea:#15232d; --ink:#e4e9ee; --muted:#9aa6b2; --rule:#28333e;
+  --closed:#5cc28b; --closed-soft:#173326; --last:#ff8a52; --last-soft:#3b2216; --far:#5f6b77; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--land);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.05}
+p{margin:0}
+a{color:var(--closed)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 32px;align-items:end}
+header h1{font-size:clamp(2rem,5.2vw,3.6rem);font-weight:900;letter-spacing:-.025em}
+header h1 .n{color:var(--last)}
+header p{color:var(--muted);max-width:62ch;margin-top:10px;font-size:1.05rem}
+.legendkey{display:flex;flex-direction:column;gap:6px;font-size:.85rem}
+.legendkey span{display:flex;align-items:center;gap:8px}
+.k{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}
+.k.c{background:var(--closed)} .k.l{background:var(--last)} .k.f{border:2px solid var(--far)}
+@media (max-width:760px){header{grid-template-columns:1fr}.legendkey{flex-direction:row;flex-wrap:wrap;gap:14px}}
+
+.controls{display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:18px 28px;align-items:end;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:16px 20px}
+@media (max-width:900px){.controls{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.controls{grid-template-columns:1fr}}
+.ctl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:.9rem}
+.ctl output{font-family:var(--mono);font-weight:500;color:var(--last)}
+.ctl small{color:var(--muted);font-size:.75rem}
+input[type=range]{width:100%;accent-color:var(--last)}
+.seg{display:inline-flex;border:1.5px solid var(--rule);border-radius:7px;overflow:hidden}
+.seg button{font:600 .85rem var(--body);background:transparent;color:var(--ink);border:0;padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;cursor:pointer}
+.toggle input{width:18px;height:18px;accent-color:var(--closed)}
+.linkbtn{font:500 .75rem var(--mono);background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0;text-align:left}
+button:focus-visible,input:focus-visible{outline:2px solid var(--last);outline-offset:2px}
+
+.main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.mapbox{background:var(--sea);border:1px solid var(--rule);border-radius:10px;overflow:hidden;position:relative}
+.mapbox svg{display:block;width:100%;height:auto}
+.mapbox .cap{position:absolute;left:12px;bottom:10px;font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.dot{cursor:pointer}
+.dot text{font-family:var(--body);font-size:12px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--sea);stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.dot text.gl{font-family:var(--mono);font-size:10.5px;font-weight:500}
+.ring{fill:none;stroke:var(--last);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:pulse 2.2s ease-out infinite}
+@keyframes pulse{from{transform:scale(1);opacity:.9}to{transform:scale(2.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none;opacity:.6}}
+
+.ledger{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;display:flex;flex-direction:column;max-height:640px;min-width:0}
+.ledger-head{display:grid;grid-template-columns:minmax(0,1fr) 6.5rem;gap:8px;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.ledger-list{overflow-y:auto;flex:1}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 6.5rem;gap:4px 8px;padding:9px 16px;border-bottom:1px solid var(--rule);cursor:pointer;width:100%;background:transparent;border-left:0;border-right:0;border-top:0;font:inherit;color:inherit;text-align:left;align-items:center}
+.row:hover{background:var(--land)}
+.row[aria-pressed="true"]{background:var(--last-soft)}
+.row .nm{font-weight:600;display:flex;align-items:center;gap:8px;min-width:0}
+.row .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .g{font-family:var(--mono);font-size:.85rem;text-align:right;font-variant-numeric:tabular-nums}
+.row .bar{grid-column:1/-1;height:4px;border-radius:2px;background:var(--rule);overflow:hidden}
+.row .bar i{display:block;height:100%;background:var(--far)}
+.row.closed .g{color:var(--closed)} .row.closed .bar i{background:var(--closed)}
+.row.last .g{color:var(--last)} .row.last .bar i{background:var(--last)}
+.row.excl{opacity:.6}
+.row.excl .g{font-family:var(--body);font-size:.75rem;color:var(--muted)}
+
+.below{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.below{grid-template-columns:1fr}}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{font-size:1.6rem;font-weight:900;letter-spacing:-.015em}
+.wf{display:flex;flex-direction:column;gap:8px}
+.wf-row{display:grid;grid-template-columns:10rem minmax(0,1fr) 5.5rem;gap:10px;align-items:center;font-size:.9rem}
+.wf-row small{display:block;font-family:var(--mono);font-size:.66rem;color:var(--muted)}
+.wf-track{position:relative;height:18px;background:var(--land);border-radius:3px}
+.wf-track i{position:absolute;top:0;bottom:0;border-radius:3px}
+.wf-row .v{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:520px){.wf-row{grid-template-columns:1fr 5rem}.wf-track{grid-column:1/-1;grid-row:2}}
+.verdict{border-radius:8px;padding:12px 14px;font-weight:600}
+.verdict.closed{background:var(--closed-soft);color:var(--closed)}
+.verdict.last{background:var(--last-soft);color:var(--last)}
+.verdict.far{background:var(--land);color:var(--muted)}
+.side{display:flex;flex-direction:column;gap:20px}
+.clock{font-family:var(--display);font-size:2.2rem;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.clock.up{color:var(--last)} .clock.down{color:var(--closed)}
+.muted{color:var(--muted);font-size:.88rem}
+.spark{width:100%;height:auto;display:block}
+.spark text{font-family:var(--mono);font-size:9px;fill:var(--muted)}
+.method{font-size:.85rem;color:var(--muted);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.method ul{margin:6px 0 0;padding-left:1.1em}
+.method li+li{margin-top:3px}
+@media (max-width:700px){.method{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <span class="eyebrow">Orange County · starter homes · Lane 3, Fund it</span>
+      <h1 id="headline">A <span id="hGift">$25,000</span> gift finishes a home in <span class="n" id="hN">5 cities</span>.</h1>
+      <p id="sub">After state programs, a moderate-income family of four is already at $0 in 4 OC cities, and less than one gift away in 5 more. This map shows where the last dollar does the most.</p>
+    </div>
+    <div class="legendkey" aria-label="Legend">
+      <span><i class="k c"></i>Gap already closed</span>
+      <span><i class="k l"></i>Your gift closes it</span>
+      <span><i class="k f"></i>Still out of reach</span>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="ctl">
+      <label for="gift">Your gift per home <output id="giftOut">$25,000</output></label>
+      <input type="range" id="gift" min="5000" max="200000" step="5000" value="25000">
+      <small>A donor, employer or city top-up on one home.</small>
+    </div>
+    <div class="ctl">
+      <label for="rate">30-year rate <output id="rateOut">7.18%</output></label>
+      <input type="range" id="rate" min="3" max="9" step="0.01" value="7.18">
+      <button type="button" class="linkbtn" id="rateReset">Reset to Freddie Mac PMMS, Nov 5, 2026</button>
+    </div>
+    <div class="ctl">
+      <span class="eyebrow">Household (4 people)</span>
+      <div class="seg" role="group" aria-label="Income level">
+        <button type="button" id="incMod" aria-pressed="true">Moderate</button>
+        <button type="button" id="incLow" aria-pressed="false">Lower</button>
+      </div>
+      <small id="incNote">Can spend 35% of 110% of area median income.</small>
+    </div>
+    <div class="ctl">
+      <label class="toggle" for="dfa"><input type="checkbox" id="dfa" checked> Stack Dream For All</label>
+      <small>Up to 20%, max $150k. Funds not confirmed.</small>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="mapbox">
+      <svg id="map" viewBox="0 0 600 560" role="img" aria-label="Map of Orange County cities colored by the gap left on a starter home"></svg>
+      <span class="cap">Dots at approximate city centers · Zillow ZHVI bottom tier, Sep 2026</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-head"><span class="eyebrow">City, by gap left</span><span class="eyebrow" style="text-align:right">Gap</span></div>
+      <div class="ledger-list" id="list"></div>
+    </div>
+  </div>
+
+  <div class="below">
+    <div class="card" id="detail" aria-live="polite"></div>
+    <div class="side">
+      <div class="card">
+        <span class="eyebrow">Gap clock · <span id="clkCity">Laguna Hills</span></span>
+        <div class="clock num" id="clock">+$1,897/mo</div>
+        <p class="muted" id="clkNote"></p>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Rate dividend</span>
+        <p id="divLine" style="font-weight:600"></p>
+        <svg class="spark" id="spark" viewBox="0 0 300 90" aria-label="30-year mortgage rate, last nine weeks"></svg>
+        <p class="muted">Every 1-point drop in the rate raises what this family can pay by about <b id="perPt" class="num">$45k</b>. Updates weekly from the Freddie Mac file.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card method">
+    <div>
+      <span class="eyebrow">How the gap is computed</span>
+      <ul>
+        <li><b>Starter home:</b> Zillow Home Value Index, bottom third of homes, each city, Sep 30, 2026.</li>
+        <li><b>What the family can pay:</b> Orange County area median income for 4 people, $138,600 (HCD 2026 State Income Limits, revised Jun 23, 2026). Moderate: 35% × 110% of it per year on housing. Lower: 30% × 70%. Per HSC 50052.5 as summarized by HCD; check the statute text before relying on it.</li>
+        <li><b>Turned into a price</b> at the chosen rate, 30-year fixed. ASSUMPTION: 3% down, property tax 1.1%/yr, insurance 0.35%/yr, no HOA.</li>
+        <li><b>Dream For All:</b> 20% of price, capped at $150k, per CalHFA's program page. Whether funds are open was not confirmed.</li>
+        <li><b>Gap clock:</b> 12-month change in the same Zillow index, divided by 12.</li>
+        <li>Seal Beach and Laguna Woods are excluded: their low-end homes are mostly in age-restricted communities.</li>
+      </ul>
+    </div>
+    <div>
+      <span class="eyebrow">Sources</span>
+      <ul>
+        <li><a href="https://www.zillow.com/research/data/">Zillow Research, ZHVI city files</a></li>
+        <li><a href="https://www.hcd.ca.gov/sites/default/files/docs/grants-and-funding/income-limits-2026.pdf">HCD 2026 State Income Limits (PDF)</a></li>
+        <li><a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&amp;sectionNum=50052.5">Health and Safety Code 50052.5</a></li>
+        <li><a href="https://www.freddiemac.com/pmms/docs/PMMS_history.csv">Freddie Mac PMMS history</a></li>
+        <li><a href="https://calhfa.ca.gov/dream/">CalHFA Dream For All</a></li>
+      </ul>
+      <p style="margin-top:12px"><b>Prototype.</b> Not legal, financial or lending advice. Typical values, not a specific listing; a real deal needs a real price, HOA and tax bill.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const fmt=n=>(n<0?"−$":"$")+Math.abs(Math.round(n)).toLocaleString("en-US");
+  const fmtK=n=>{const a=Math.abs(n);const s=n<0?"−$":"$";return a>=1e6?s+(a/1e6).toFixed(2)+"M":s+Math.round(a/1000)+"k";};
+
+  // [city, starter value (ZHVI bottom tier, 2026-09-30), 12-month change, excluded, lat, lon (approximate center)]
+  const C=[["Laguna Woods",351731,17673,1,33.610,-117.725],["Seal Beach",356750,16675,1,33.741,-118.105],["Santa Ana",594790,17090,0,33.745,-117.868],["Stanton",596016,5213,0,33.802,-117.993],["Rancho Santa Margarita",668751,69,0,33.641,-117.603],["La Habra",672547,12054,0,33.932,-117.946],["Laguna Hills",725710,22764,0,33.612,-117.712],["Tustin",730483,-5878,0,33.746,-117.826],["Lake Forest",734370,-3194,0,33.647,-117.689],["Aliso Viejo",736450,15268,0,33.575,-117.726],["Silverado",739804,28737,0,33.746,-117.636],["Anaheim",756854,16914,0,33.836,-117.914],["Fullerton",783557,22565,0,33.870,-117.925],["San Juan Capistrano",785723,30071,0,33.502,-117.663],["Garden Grove",799702,32001,0,33.774,-117.941],["Placentia",806541,14021,0,33.872,-117.870],["Buena Park",818066,27147,0,33.868,-117.998],["Cypress",829112,20280,0,33.817,-118.037],["Orange",834041,22336,0,33.788,-117.853],["Mission Viejo",864088,12462,0,33.600,-117.672],["Rancho Mission Viejo",881086,6686,0,33.530,-117.580],["Brea",886710,18998,0,33.917,-117.900],["Laguna Niguel",894776,27402,0,33.523,-117.707],["Ladera Ranch",898779,9117,0,33.571,-117.637],["Huntington Beach",918729,39998,0,33.660,-117.999],["Westminster",925871,48115,0,33.759,-117.994],["La Palma",977172,40372,0,33.846,-118.047],["Yorba Linda",983637,23951,0,33.889,-117.813],["Irvine",1009961,-14718,0,33.684,-117.795],["Costa Mesa",1014854,56486,0,33.641,-117.919],["Fountain Valley",1044203,50638,0,33.709,-117.954],["Los Alamitos",1134003,55093,0,33.803,-118.072],["Dana Point",1172099,76035,0,33.467,-117.698],["San Clemente",1202951,62121,0,33.427,-117.612],["Coto de Caza",1247655,3466,0,33.604,-117.587],["North Tustin",1345766,47106,0,33.764,-117.794],["Villa Park",1874647,119113,0,33.815,-117.813],["Newport Beach",1939503,140744,0,33.619,-117.929],["Laguna Beach",1959765,144948,0,33.542,-117.783]]
+    .map(r=>({name:r[0],price:r[1],chg:r[2],excl:!!r[3],lat:r[4],lon:r[5]}));
+  const RATES=[["9/10",6.76],["9/17",6.95],["9/24",7.03],["10/1",7.28],["10/8",7.40],["10/15",7.40],["10/22",7.32],["10/29",7.24],["11/5",7.18]];
+  const AMI=138600, TAX=0.011, INS=0.0035, DOWN=0.03, PMMS=7.18;
+  const INC={mod:{cost:.35*1.10*AMI,note:"Can spend 35% of 110% of area median income.",label:"moderate-income"},
+             low:{cost:.30*.70*AMI,note:"Can spend 30% of 70% of area median income.",label:"lower-income"}};
+
+  let st={gift:25000,rate:PMMS,inc:"mod",dfa:true,sel:"Laguna Hills"};
+
+  const maxPrice=(cost,rate)=>{const r=rate/100/12;const pf=r>0?r/(1-Math.pow(1+r,-360)):1/360;return (cost/12)/((1-DOWN)*pf+(TAX+INS)/12);};
+  function compute(){
+    const afford=maxPrice(INC[st.inc].cost,st.rate);
+    C.forEach(c=>{c.afford=afford;c.dfaAmt=st.dfa?Math.min(.2*c.price,150000):0;c.gap=c.price-afford-c.dfaAmt;
+      c.state=c.excl?"excl":c.gap<=0?"closed":c.gap<=st.gift?"last":"far";});
+    return afford;
+  }
+
+  // projection
+  const LON0=-118.13,LON1=-117.55,LAT0=33.40,LAT1=33.96,PAD=30,W=600,H=560;
+  const kx=Math.cos(33.7*Math.PI/180);
+  const sx=(W-2*PAD)/((LON1-LON0)*kx), sy=(H-2*PAD)/(LAT1-LAT0), s=Math.min(sx,sy);
+  const px=lon=>PAD+(lon-LON0)*kx*s, py=lat=>H-PAD-(lat-LAT0)*s;
+
+  function renderMap(){
+    const svg=$("map"); const NS="http://www.w3.org/2000/svg";
+    let html=`<text x="${px(-118.06)}" y="${py(33.47)}" style="font-family:var(--mono);font-size:12px;letter-spacing:.3em;fill:var(--muted)">PACIFIC</text>`;
+    const order=[...C].sort((a,b)=>({far:0,excl:0,last:1,closed:1}[a.state]-({far:0,excl:0,last:1,closed:1}[b.state])) || (a.name===st.sel)-(b.name===st.sel));
+    order.forEach(c=>{
+      const x=px(c.lon),y=py(c.lat),sel=c.name===st.sel;
+      let shape;
+      if(c.state==="excl") shape=`<path d="M${x-4},${y-4}L${x+4},${y+4}M${x+4},${y-4}L${x-4},${y+4}" stroke="var(--far)" stroke-width="2"/>`;
+      else if(c.state==="far"){ const o=Math.max(.35,1-Math.min(1,c.gap/1200000)*.65); shape=`<circle cx="${x}" cy="${y}" r="6" fill="var(--sea)" stroke="var(--far)" stroke-width="2" opacity="${o}"/>`; }
+      else if(c.state==="last") shape=`<circle class="ring" cx="${x}" cy="${y}" r="7"/><circle cx="${x}" cy="${y}" r="7.5" fill="var(--last)"/>`;
+      else shape=`<circle cx="${x}" cy="${y}" r="7.5" fill="var(--closed)"/>`;
+      if(sel) shape+=`<circle cx="${x}" cy="${y}" r="13" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
+      let label="";
+      if(c.state==="closed"||c.state==="last"||sel){
+        const left = x>W-150; const anchor=left?"end":"start"; const lx=left?x-13:x+13;
+        const sub = c.state==="excl"?"excluded":c.gap<=0?"$0 gap":fmtK(c.gap)+" left";
+        label=`<text x="${lx}" y="${y-1}" text-anchor="${anchor}">${c.name}</text><text class="gl" x="${lx}" y="${y+12}" text-anchor="${anchor}">${sub}</text>`;
+      }
+      html+=`<g class="dot" data-c="${c.name}" tabindex="0" role="button" aria-label="${c.name}: ${c.state==="excl"?"excluded":c.gap<=0?"gap closed":fmt(c.gap)+" gap left"}"><title>${c.name}: ${c.state==="excl"?"excluded (age-restricted communities)":c.gap<=0?"gap closed":fmt(c.gap)+" left"}</title>${shape}${label}</g>`;
+    });
+    svg.innerHTML=html;
+    svg.querySelectorAll(".dot").forEach(g=>{
+      const pick=()=>{st.sel=g.dataset.c;render();};
+      g.addEventListener("click",pick); g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();}});
+    });
+  }
+
+  function renderList(){
+    const rows=[...C].sort((a,b)=>(a.excl-b.excl)||(a.gap-b.gap));
+    const max=Math.max(...C.filter(c=>!c.excl).map(c=>c.gap),1);
+    $("list").replaceChildren(...rows.map(c=>{
+      const b=document.createElement("button"); b.type="button"; b.className="row "+c.state; b.setAttribute("aria-pressed",String(c.name===st.sel));
+      const k=c.state==="closed"?"c":c.state==="last"?"l":"f";
+      const w=c.excl?0:Math.max(2,Math.min(100,Math.max(0,c.gap)/max*100));
+      b.innerHTML=`<span class="nm"><i class="k ${k}"></i><span></span></span><span class="g">${c.excl?"excluded":c.gap<=0?"$0":fmtK(c.gap)}</span><span class="bar"><i style="width:${c.gap<=0&&!c.excl?100:w}%"></i></span>`;
+      b.querySelector(".nm span").textContent=c.name;
+      b.onclick=()=>{st.sel=c.name;render();};
+      return b;
+    }));
+  }
+
+  function renderDetail(afford){
+    const c=C.find(x=>x.name===st.sel); const P=c.price;
+    const pct=v=>Math.max(0,Math.min(100,v/P*100));
+    const famW=pct(Math.min(afford,P)), dfaW=pct(Math.min(c.dfaAmt,Math.max(0,P-afford))), gapLeft=Math.max(0,c.gap);
+    const giftUse=Math.min(st.gift,gapLeft);
+    let verdict;
+    if(c.excl) verdict=`<div class="verdict far">Excluded. Low-end values here mostly reflect age-restricted communities, so they don't represent a family starter home.</div>`;
+    else if(c.gap<=0) verdict=`<div class="verdict closed">Closed without a gift. Programs already cover the gap, with ${fmt(-c.gap)} to spare.</div>`;
+    else if(c.gap<=st.gift) verdict=`<div class="verdict last">A ${fmt(st.gift)} gift finishes this home, with ${fmt(st.gift-c.gap)} left over.</div>`;
+    else verdict=`<div class="verdict far">A ${fmt(st.gift)} gift covers ${Math.round(st.gift/c.gap*100)}% of this gap. It would take ${Math.ceil(c.gap/st.gift)} gifts this size.</div>`;
+    $("detail").innerHTML=`<span class="eyebrow">Selected city · ${INC[st.inc].label} family of 4 · ${st.rate.toFixed(2)}%</span><h2></h2>
+      <div class="wf">
+        <div class="wf-row"><span>Starter home<small>Zillow, Sep 2026</small></span><div class="wf-track"><i style="left:0;width:100%;background:var(--far);opacity:.5"></i></div><span class="v">${fmtK(P)}</span></div>
+        <div class="wf-row"><span>Family can pay<small>HCD 2026 · HSC 50052.5</small></span><div class="wf-track"><i style="left:0;width:${famW}%;background:var(--ink);opacity:.8"></i></div><span class="v">${fmtK(Math.min(afford,P))}</span></div>
+        <div class="wf-row"><span>Dream For All<small>${st.dfa?"funds unconfirmed":"not stacked"}</small></span><div class="wf-track"><i style="left:${famW}%;width:${dfaW}%;background:var(--closed)"></i></div><span class="v">${fmtK(Math.min(c.dfaAmt,Math.max(0,P-afford)))}</span></div>
+        <div class="wf-row"><span><b>Gap left</b></span><div class="wf-track"><i style="left:${100-pct(gapLeft)}%;width:${pct(gapLeft)}%;background:var(--last);opacity:.35"></i><i style="left:${100-pct(gapLeft)}%;width:${pct(giftUse)}%;background:var(--last)"></i></div><span class="v"><b>${fmtK(gapLeft)}</b></span></div>
+      </div>${verdict}`;
+    $("detail").querySelector("h2").textContent=c.name;
+  }
+
+  let clockBase=performance.now();
+  function renderClock(){
+    const c=C.find(x=>x.name===st.sel); const m=c.chg/12;
+    $("clkCity").textContent=c.name;
+    $("clock").textContent=(m>=0?"+":"−")+fmt(Math.abs(m)).replace(/^−?\$/,"$")+"/mo";
+    $("clock").className="clock num "+(m>=0?"up":"down");
+    clockBase=performance.now();
+    $("clkNote").textContent = m>=0
+      ? `The starter-home value here rose ${fmt(c.chg)} in 12 months. Every month a family waits, the gap grows by about this much.`
+      : `Values here fell ${fmt(-c.chg)} in 12 months, so the gap is shrinking for now.`;
+  }
+  function tick(){
+    const c=C.find(x=>x.name===st.sel); if(!c) return;
+    const perSec=c.chg/365.25/86400; const s=(performance.now()-clockBase)/1000;
+    const v=perSec*s; const base=(c.chg/12);
+    $("clock").title=`Since you selected ${c.name}: ${v>=0?"+":"−"}$${Math.abs(v).toFixed(2)}`;
+  }
+
+  function renderDividend(){
+    const cost=INC[st.inc].cost; const p=r=>maxPrice(cost,r);
+    const wk=p(7.18)-p(7.24), mo=p(7.18)-p(7.40);
+    $("divLine").textContent=`Rates fell from 7.40% (Oct 8) to 7.18% (Nov 5). That gave every ${INC[st.inc].label} OC family of four about ${fmt(mo)} more buying power, ${fmt(wk)} of it this week.`;
+    $("perPt").textContent=fmtK(p(st.rate-0.5)-p(st.rate+0.5));
+    const W=300,H=90,L=30,R=8,T=10,B=20; const lo=6.6,hi=7.6;
+    const x=i=>L+(W-L-R)*i/(RATES.length-1), y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+    let s="";[6.8,7.2,7.6].forEach(v=>s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${L-4}" y="${y(v)+3}" text-anchor="end">${v.toFixed(1)}</text>`);
+    const pts=RATES.map((r,i)=>`${x(i)},${y(r[1])}`).join(" ");
+    s+=`<polygon points="${x(0)},${y(lo)} ${pts} ${x(RATES.length-1)},${y(lo)}" fill="var(--last-soft)"/><polyline points="${pts}" fill="none" stroke="var(--last)" stroke-width="2"/>`;
+    s+=`<circle cx="${x(RATES.length-1)}" cy="${y(7.18)}" r="3.5" fill="var(--last)"/>`;
+    [0,4,8].forEach(i=>s+=`<text x="${x(i)}" y="${H-5}" text-anchor="middle">${RATES[i][0]}</text>`);
+    $("spark").innerHTML=s;
+  }
+
+  function renderHead(afford){
+    const last=C.filter(c=>c.state==="last").length, closed=C.filter(c=>c.state==="closed").length;
+    $("hGift").textContent=fmt(st.gift);
+    $("hN").textContent=last+(last===1?" city":" cities");
+    const who=INC[st.inc].label;
+    $("sub").textContent = closed||last
+      ? `After ${st.dfa?"state programs":"what the family can pay"}, a ${who} family of four is already at $0 in ${closed} OC ${closed===1?"city":"cities"}, and one gift away in ${last} more. This map shows where the last dollar does the most.`
+      : `At ${st.rate.toFixed(2)}%, a ${who} family of four can pay about ${fmtK(afford)}. Even at a 0% rate it would be ${fmtK(maxPrice(INC[st.inc].cost,0))}. No OC starter home is one gift away, so this family needs a price-capped home, such as a land trust, not a bigger loan.`;
+  }
+
+  function render(){
+    const afford=compute();
+    $("giftOut").textContent=fmt(st.gift); $("rateOut").textContent=st.rate.toFixed(2)+"%";
+    $("incMod").setAttribute("aria-pressed",String(st.inc==="mod")); $("incLow").setAttribute("aria-pressed",String(st.inc==="low"));
+    $("incNote").textContent=INC[st.inc].note;
+    renderHead(afford); renderMap(); renderList(); renderDetail(afford); renderClock(); renderDividend();
+  }
+
+  $("gift").addEventListener("input",e=>{st.gift=+e.target.value;render();});
+  $("rate").addEventListener("input",e=>{st.rate=+e.target.value;render();});
+  $("rateReset").onclick=()=>{st.rate=PMMS;$("rate").value=PMMS;render();};
+  $("incMod").onclick=()=>{st.inc="mod";render();};
+  $("incLow").onclick=()=>{st.inc="low";render();};
+  $("dfa").addEventListener("change",e=>{st.dfa=e.target.checked;render();});
+  setInterval(tick,1000);
+  render();
+})();
+</script>
